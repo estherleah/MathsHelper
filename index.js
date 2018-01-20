@@ -18,9 +18,9 @@ var reprompt;
 var welcomeMessages = [
     "Welcome to Maths Helper",
     "Welcome",
-    "Howdy",
-    "Hi",
-    '<say-as interpret-as="interjection">Aloha!</say-as>'
+    "Hello",
+    "Heya",
+    "Hi"
 ];
 var welcomeOutput = "Shall we get started?";
 var welcomeReprompt = "Shall we get started?";
@@ -53,7 +53,9 @@ var handlers = {
         this.emit(':tell', speechOutput);
     },
     'SessionEndedRequest': function () {
-        speechOutput = '';
+        var score = this.attributes['score'];
+        var total = this.attributes['total'];
+        speechOutput = "You got " + score + " out of " + total + " answers correct.";
         //this.emit(':saveState', true);//uncomment to save attributes to db on session end
         this.emit(':tell', speechOutput);
     },
@@ -123,9 +125,11 @@ var handlers = {
         // set the values of op1 and op2
         this.attributes['op1'] = Math.floor(Math.random()*10);
         this.attributes['op2'] = parseInt(tableSlotRaw);
-        // set score and total to zero
-        this.attributes['score'] = 0;
-        this.attributes['total'] = 0;
+        // set score and total
+        if (this.attributes['total'] == 0 || this.attributes['total'] == null) {
+            this.attributes['total'] = 0;
+            this.attributes['score'] = 0;
+        }
         //Your custom intent handling goes here
         if (Number.isNaN(this.attributes['op2'])) {
             speechOutput = "I didn't catch that. Please try again.";

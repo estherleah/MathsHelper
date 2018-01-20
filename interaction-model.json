@@ -43,14 +43,15 @@
           "I want to practice my {table} times tables",
           "help me with my {table} times table",
           "test me on my {table} times tables",
-          "I want to work on the {table} times table",
+          "let's work on the {table} times table",
           "practice multiplications with {table}",
           "practice the {table} times tables",
           "switch to {table} times tables",
           "now practice {table} times tables",
           "let me practice my {table} times tables",
           "actually let me try my {table} times tables",
-          "I want to work on my {table} times tables"
+          "I want to work on my {table} times tables",
+          "for {table} times tables"
         ],
         "slots": [
           {
