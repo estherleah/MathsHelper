@@ -15,8 +15,16 @@
 
 var speechOutput;
 var reprompt;
-var welcomeOutput = "This is a placeholder welcome message. This skill includes 6 intents. Try one of your intent utterances to test the skill.";
-var welcomeReprompt = "sample re-prompt text";
+var welcomeMessages = [
+    "Welcome to Maths Helper",
+    "Welcome",
+    "Howdy",
+    "Hi",
+    '<say-as interpret-as="interjection">Aloha!</say-as>'
+];
+var welcomeOutput = "Shall we get started?";
+var welcomeReprompt = "Shall we get started?";
+
 // 2. Skill Code =======================================================================================================
 "use strict";
 var Alexa = require('alexa-sdk');
@@ -24,7 +32,8 @@ var APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
 var speechOutput = '';
 var handlers = {
     'LaunchRequest': function () {
-        this.emit(':ask', welcomeOutput, welcomeReprompt);
+        var welcome = randomPhrase(welcomeMessages) + welcomeOutput;
+        this.emit(':ask', welcome, welcomeReprompt);
     },
     'AMAZON.HelpIntent': function () {
         speechOutput = '';
@@ -32,11 +41,15 @@ var handlers = {
         this.emit(':ask', speechOutput, reprompt);
     },
     'AMAZON.CancelIntent': function () {
-        speechOutput = '';
+        var score = this.attributes['score'];
+        var total = this.attributes['total'];
+        speechOutput = "You got " + score + " out of " + total + " answers correct.";
         this.emit(':tell', speechOutput);
     },
     'AMAZON.StopIntent': function () {
-        speechOutput = '';
+        var score = this.attributes['score'];
+        var total = this.attributes['total'];
+        speechOutput = "You got " + score + " out of " + total + " answers correct.";
         this.emit(':tell', speechOutput);
     },
     'SessionEndedRequest': function () {
@@ -45,36 +58,82 @@ var handlers = {
         this.emit(':tell', speechOutput);
     },
     "AMAZON.YesIntent": function () {
+        this.attributes['set'] = false;
+        // set the values of op1 and op2
+        this.attributes['op1'] = Math.floor(Math.random()*10);
+        this.attributes['op2'] = Math.floor(Math.random()*10);
+        // set score and total to zero
+        this.attributes['score'] = 0;
+        this.attributes['total'] = 0;
         var speechOutput = "";
         //any intent slot variables are listed here for convenience
 
         //Your custom intent handling goes here
-        speechOutput = "This is a place holder response for the intent named AMAZON.YesIntent. This intent has no slots. Anything else?";
+        speechOutput = "Ok, let's get started. What is: " + this.attributes['op1'] + " times " + this.attributes['op2'];
         this.emit(":ask", speechOutput, speechOutput);
     },
     "AnswerIntent": function () {
         var speechOutput = "";
+
+        // get values of op1 and op2 from the question to calculate solution
+        var op1 = this.attributes['op1'];
+		var op2 = this.attributes['op2'];
+        var solution = parseInt(op1) * parseInt(op2);
+        
+        // reset the values of op1 and op2
+        this.attributes['op1'] = Math.floor(Math.random()*10);
+        if (!this.attributes['set']) {
+            this.attributes['op2'] = Math.floor(Math.random()*10);
+        }
+
         //any intent slot variables are listed here for convenience
-        var numberSlotRaw = this.event.request.intent.slots.number.value;
-        console.log(numberSlotRaw);
-        var numberSlot = resolveCanonical(this.event.request.intent.slots.number);
-        console.log(numberSlot);
+        var answerSlotRaw = this.event.request.intent.slots.answer.value;
+        console.log(answerSlotRaw);
+        var answerSlot = resolveCanonical(this.event.request.intent.slots.answer);
+        console.log(answerSlot);
+
+        if (solution == parseInt(answerSlotRaw)) {
+            //Your custom intent handling goes here
+            speechOutput = "Correct! What is: " + this.attributes['op1'] + " times " + this.attributes['op2'];
+            // increment score and total
+            this.attributes['score'] += 1;
+            this.attributes['total'] += 1;
+            this.emit(":ask", speechOutput, speechOutput);
+        } else {
+            //Your custom intent handling goes here
+            speechOutput = "Wrong! The answer is " + solution + ". What is: " + this.attributes['op1'] + " times " + this.attributes['op2'];
+            // increment total
+            this.attributes['total'] += 1;
+            this.emit(":ask", speechOutput, speechOutput);
+        }
 
         //Your custom intent handling goes here
         speechOutput = "This is a place holder response for the intent named AnswerIntent. This intent has one slot, which is number. Anything else?";
         this.emit(":ask", speechOutput, speechOutput);
     },
     "SetTimesTables": function () {
+        this.attributes['set'] = true;
         var speechOutput = "";
         //any intent slot variables are listed here for convenience
-        var numberSlotRaw = this.event.request.intent.slots.number.value;
-        console.log(numberSlotRaw);
-        var numberSlot = resolveCanonical(this.event.request.intent.slots.number);
-        console.log(numberSlot);
+        var tableSlotRaw = this.event.request.intent.slots.table.value;
+        console.log(tableSlotRaw);
+        var tableSlot = resolveCanonical(this.event.request.intent.slots.table);
+        console.log(tableSlot);
 
+        // set the values of op1 and op2
+        this.attributes['op1'] = Math.floor(Math.random()*10);
+        this.attributes['op2'] = parseInt(tableSlotRaw);
+        // set score and total to zero
+        this.attributes['score'] = 0;
+        this.attributes['total'] = 0;
         //Your custom intent handling goes here
-        speechOutput = "This is a place holder response for the intent named SetTimesTables. This intent has one slot, which is number. Anything else?";
-        this.emit(":ask", speechOutput, speechOutput);
+        if (Number.isNaN(this.attributes['op2'])) {
+            speechOutput = "I didn't catch that. Please try again.";
+            this.emit(":ask", speechOutput, speechOutput);
+        } else {
+            speechOutput = "Ok, let's get started. What is: " + this.attributes['op1'] + " times " + this.attributes['op2'];
+            this.emit(":ask", speechOutput, speechOutput);
+        }
     },	
     'Unhandled': function () {
         speechOutput = "The skill didn't quite understand what you wanted.  Do you want to try something else?";

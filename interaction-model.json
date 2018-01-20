@@ -20,12 +20,19 @@
       {
         "name": "AnswerIntent",
         "samples": [
-          "{number}",
-          "the answer is {number}"
+          "{answer}",
+          "the answer is {answer}",
+          "I think the answer is {answer}",
+          "it is {answer}",
+          "is it {answer}",
+          "maybe {answer}",
+          "my guess is {answer}",
+          "I guess it's {answer}",
+          "it's {answer}"
         ],
         "slots": [
           {
-            "name": "number",
+            "name": "answer",
             "type": "AMAZON.NUMBER"
           }
         ]
@@ -33,13 +40,21 @@
       {
         "name": "SetTimesTables",
         "samples": [
-          "I want to practice my {number} times tables",
-          "help me with my {number} times table",
-          "test me on my {number} times tables"
+          "I want to practice my {table} times tables",
+          "help me with my {table} times table",
+          "test me on my {table} times tables",
+          "I want to work on the {table} times table",
+          "practice multiplications with {table}",
+          "practice the {table} times tables",
+          "switch to {table} times tables",
+          "now practice {table} times tables",
+          "let me practice my {table} times tables",
+          "actually let me try my {table} times tables",
+          "I want to work on my {table} times tables"
         ],
         "slots": [
           {
-            "name": "number",
+            "name": "table",
             "type": "AMAZON.NUMBER"
           }
         ]
