@@ -36,8 +36,8 @@ var handlers = {
         this.emit(':ask', welcome, welcomeReprompt);
     },
     'AMAZON.HelpIntent': function () {
-        speechOutput = '';
-        reprompt = '';
+        speechOutput = "Maths Helper can test you on mixed times tables up to ten times ten. It can also test you on a specific times table.";
+        reprompt = "Maths Helper can test you on mixrd times tables up to ten times ten. It can also test you on a specific times table.";
         this.emit(':ask', speechOutput, reprompt);
     },
     'AMAZON.CancelIntent': function () {
