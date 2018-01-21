@@ -62,8 +62,8 @@ var handlers = {
     "AMAZON.YesIntent": function () {
         this.attributes['set'] = false;
         // set the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*10);
-        this.attributes['op2'] = Math.floor(Math.random()*10);
+        this.attributes['op1'] = Math.floor(Math.random()*11);
+        this.attributes['op2'] = Math.floor(Math.random()*11);
         // set score and total to zero
         this.attributes['score'] = 0;
         this.attributes['total'] = 0;
@@ -83,9 +83,9 @@ var handlers = {
         var solution = parseInt(op1) * parseInt(op2);
         
         // reset the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*10);
+        this.attributes['op1'] = Math.floor(Math.random()*11);
         if (!this.attributes['set']) {
-            this.attributes['op2'] = Math.floor(Math.random()*10);
+            this.attributes['op2'] = Math.floor(Math.random()*11);
         }
 
         //any intent slot variables are listed here for convenience
@@ -123,7 +123,7 @@ var handlers = {
         console.log(tableSlot);
 
         // set the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*10);
+        this.attributes['op1'] = Math.floor(Math.random()*11);
         this.attributes['op2'] = parseInt(tableSlotRaw);
         // set score and total
         if (this.attributes['total'] == 0 || this.attributes['total'] == null) {
