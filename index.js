@@ -43,19 +43,31 @@ var handlers = {
     'AMAZON.CancelIntent': function () {
         var score = this.attributes['score'];
         var total = this.attributes['total'];
-        speechOutput = "You got " + score + " out of " + total + " answers correct.";
+        if (this.attributes['total'] == 0 || this.attributes['total'] == null) {
+            speechOutput = '';
+        } else {
+            speechOutput = "You got " + score + " out of " + total + " answers correct.";
+        }
         this.emit(':tell', speechOutput);
     },
     'AMAZON.StopIntent': function () {
         var score = this.attributes['score'];
         var total = this.attributes['total'];
-        speechOutput = "You got " + score + " out of " + total + " answers correct.";
+        if (this.attributes['total'] == 0 || this.attributes['total'] == null) {
+            speechOutput = '';
+        } else {
+            speechOutput = "You got " + score + " out of " + total + " answers correct.";
+        }
         this.emit(':tell', speechOutput);
     },
     'SessionEndedRequest': function () {
         var score = this.attributes['score'];
         var total = this.attributes['total'];
-        speechOutput = "You got " + score + " out of " + total + " answers correct.";
+        if (this.attributes['total'] == 0 || this.attributes['total'] == null) {
+            speechOutput = '';
+        } else {
+            speechOutput = "You got " + score + " out of " + total + " answers correct.";
+        }
         //this.emit(':saveState', true);//uncomment to save attributes to db on session end
         this.emit(':tell', speechOutput);
     },
