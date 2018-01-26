@@ -12,7 +12,6 @@
 // 1. Text strings =====================================================================================================
 //    Modify these strings and messages to change the behavior of your Lambda function
 
-
 var speechOutput;
 var reprompt;
 var welcomeMessages = [
@@ -120,10 +119,6 @@ var handlers = {
             this.attributes['total'] += 1;
             this.emit(":ask", speechOutput, speechOutput);
         }
-
-        //Your custom intent handling goes here
-        speechOutput = "This is a place holder response for the intent named AnswerIntent. This intent has one slot, which is number. Anything else?";
-        this.emit(":ask", speechOutput, speechOutput);
     },
     "SetTimesTables": function () {
         this.attributes['set'] = true;
@@ -229,13 +224,13 @@ console.log("current dialogState: "+this.event.request.dialogState);
     }
 }
 
-
 function randomPhrase(array) {
     // the argument is an array [] of words or phrases
     var i = 0;
     i = Math.floor(Math.random() * array.length);
     return(array[i]);
 }
+
 function isSlotValid(request, slotName){
         var slot = request.intent.slots[slotName];
         //console.log("request = "+JSON.stringify(request)); //uncomment if you want to see the request
