@@ -36,8 +36,8 @@ var handlers = {
         this.emit(':ask', welcome, welcomeReprompt);
     },
     'AMAZON.HelpIntent': function () {
-        speechOutput = "Maths Helper can test you on mixed times tables up to ten times ten. It can also test you on a specific times table.";
-        reprompt = "Maths Helper can test you on mixrd times tables up to ten times ten. It can also test you on a specific times table.";
+        speechOutput = "To start a mixed times tables test say 'yes'. To start a test on a specific times tables say, for example, 'test me on my seven times table'. Do you want to start a test?";
+        reprompt = "Do you want to get started?";
         this.emit(':ask', speechOutput, reprompt);
     },
     'AMAZON.CancelIntent': function () {
@@ -74,8 +74,8 @@ var handlers = {
     "AMAZON.YesIntent": function () {
         this.attributes['set'] = false;
         // set the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*11);
-        this.attributes['op2'] = Math.floor(Math.random()*11);
+        this.attributes['op1'] = Math.floor(Math.random()*13);
+        this.attributes['op2'] = Math.floor(Math.random()*13);
         // set score and total to zero
         this.attributes['score'] = 0;
         this.attributes['total'] = 0;
@@ -95,9 +95,9 @@ var handlers = {
         var solution = parseInt(op1) * parseInt(op2);
         
         // reset the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*11);
+        this.attributes['op1'] = Math.floor(Math.random()*13);
         if (!this.attributes['set']) {
-            this.attributes['op2'] = Math.floor(Math.random()*11);
+            this.attributes['op2'] = Math.floor(Math.random()*13);
         }
 
         //any intent slot variables are listed here for convenience
@@ -135,7 +135,7 @@ var handlers = {
         console.log(tableSlot);
 
         // set the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*11);
+        this.attributes['op1'] = Math.floor(Math.random()*13);
         this.attributes['op2'] = parseInt(tableSlotRaw);
         // set score and total
         if (this.attributes['total'] == 0 || this.attributes['total'] == null) {
