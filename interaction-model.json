@@ -14,10 +14,6 @@
         "samples": []
       },
       {
-        "name": "AMAZON.YesIntent",
-        "samples": []
-      },
-      {
         "name": "AnswerIntent",
         "samples": [
           "{answer}",
@@ -51,7 +47,9 @@
           "let me practice my {table} times tables",
           "actually let me try my {table} times tables",
           "I want to work on my {table} times tables",
-          "for {table} times tables"
+          "for {table} times tables",
+          "I know my {table} times tables",
+          "do I know my {table} times tables"
         ],
         "slots": [
           {
@@ -61,6 +59,6 @@
         ]
       }
     ],
-    "invocationName": "maths helper"
+    "invocationName": "multiplication madness"
   }
 }

@@ -9,22 +9,21 @@
 
 
 
-// 1. Text strings =====================================================================================================
-//    Modify these strings and messages to change the behavior of your Lambda function
+ // 1. Text strings =====================================================================================================
+ //    Modify these strings and messages to change the behavior of your Lambda function
 
-var speechOutput;
-var reprompt;
-var welcomeMessages = [
-    "Welcome to Maths Helper",
-    "Welcome",
-    "Hello",
-    "Heya",
-    "Hi"
-];
-var welcomeOutput = "Shall we get started?";
-var welcomeReprompt = "Shall we get started?";
+ var speechOutput;
+ var reprompt;
+ var welcomeMessages = [
+     "Welcome to Multiplication Madness! ",
+     "Welcome! ",
+     "Hello! ",
+     "Heya! ",
+     "Hi! "
+ ];
+ var welcomeOutput = "Do you really know your times tables? Ask me to test you to find out.";
 
-// 2. Skill Code =======================================================================================================
+ // 2. Skill Code =======================================================================================================
 "use strict";
 var Alexa = require('alexa-sdk');
 var APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
@@ -32,12 +31,11 @@ var speechOutput = '';
 var handlers = {
     'LaunchRequest': function () {
         var welcome = randomPhrase(welcomeMessages) + welcomeOutput;
-        this.emit(':ask', welcome, welcomeReprompt);
+        this.emit(':ask', welcome, welcomeOutput);
     },
-    'AMAZON.HelpIntent': function () {
-        speechOutput = "To start a mixed times tables test say 'yes'. To start a test on a specific times tables say, for example, 'test me on my seven times table'. Do you want to start a test?";
-        reprompt = "Do you want to get started?";
-        this.emit(':ask', speechOutput, reprompt);
+	'AMAZON.HelpIntent': function () {
+        speechOutput = "To start a test on a specific times tables say, for example, 'test me on my seventeen times table'. What would you like to try?";
+        this.emit(':ask', speechOutput, speechOutput);
     },
     'AMAZON.CancelIntent': function () {
         var score = this.attributes['score'];
@@ -70,22 +68,7 @@ var handlers = {
         //this.emit(':saveState', true);//uncomment to save attributes to db on session end
         this.emit(':tell', speechOutput);
     },
-    "AMAZON.YesIntent": function () {
-        this.attributes['set'] = false;
-        // set the values of op1 and op2
-        this.attributes['op1'] = Math.floor(Math.random()*13);
-        this.attributes['op2'] = Math.floor(Math.random()*13);
-        // set score and total to zero
-        this.attributes['score'] = 0;
-        this.attributes['total'] = 0;
-        var speechOutput = "";
-        //any intent slot variables are listed here for convenience
-
-        //Your custom intent handling goes here
-        speechOutput = "Ok, let's get started. What is: " + this.attributes['op1'] + " times " + this.attributes['op2'];
-        this.emit(":ask", speechOutput, speechOutput);
-    },
-    "AnswerIntent": function () {
+	"AnswerIntent": function () {
         var speechOutput = "";
 
         // get values of op1 and op2 from the question to calculate solution
@@ -93,11 +76,8 @@ var handlers = {
 		var op2 = this.attributes['op2'];
         var solution = parseInt(op1) * parseInt(op2);
         
-        // reset the values of op1 and op2
+        // reset the value of op1
         this.attributes['op1'] = Math.floor(Math.random()*13);
-        if (!this.attributes['set']) {
-            this.attributes['op2'] = Math.floor(Math.random()*13);
-        }
 
         //any intent slot variables are listed here for convenience
         var answerSlotRaw = this.event.request.intent.slots.answer.value;
@@ -120,8 +100,7 @@ var handlers = {
             this.emit(":ask", speechOutput, speechOutput);
         }
     },
-    "SetTimesTables": function () {
-        this.attributes['set'] = true;
+	"SetTimesTables": function () {
         var speechOutput = "";
         //any intent slot variables are listed here for convenience
         var tableSlotRaw = this.event.request.intent.slots.table.value;
@@ -146,7 +125,7 @@ var handlers = {
             this.emit(":ask", speechOutput, speechOutput);
         }
     },	
-    'Unhandled': function () {
+	'Unhandled': function () {
         speechOutput = "The skill didn't quite understand what you wanted.  Do you want to try something else?";
         this.emit(':ask', speechOutput, speechOutput);
     }
@@ -158,7 +137,7 @@ exports.handler = (event, context) => {
     // To enable string internationalization (i18n) features, set a resources object.
     //alexa.resources = languageStrings;
     alexa.registerHandlers(handlers);
-    //alexa.dynamoDBTableName = 'DYNAMODB_TABLE_NAME'; //uncomment this line to save attributes to DB
+	//alexa.dynamoDBTableName = 'DYNAMODB_TABLE_NAME'; //uncomment this line to save attributes to DB
     alexa.execute();
 };
 
@@ -166,61 +145,61 @@ exports.handler = (event, context) => {
 // 3. Helper Function  =================================================================================================
 
 function resolveCanonical(slot){
-    //this function looks at the entity resolution part of request and returns the slot value if a synonyms is provided
+	//this function looks at the entity resolution part of request and returns the slot value if a synonyms is provided
     try{
-        var canonical = slot.resolutions.resolutionsPerAuthority[0].values[0].value.name;
-    }catch(err){
-        console.log(err.message);
-        var canonical = slot.value;
-    };
-    return canonical;
+		var canonical = slot.resolutions.resolutionsPerAuthority[0].values[0].value.name;
+	}catch(err){
+	    console.log(err.message);
+	    var canonical = slot.value;
+	};
+	return canonical;
 };
 
 function delegateSlotCollection(){
-console.log("in delegateSlotCollection");
-console.log("current dialogState: "+this.event.request.dialogState);
+  console.log("in delegateSlotCollection");
+  console.log("current dialogState: "+this.event.request.dialogState);
     if (this.event.request.dialogState === "STARTED") {
-    console.log("in Beginning");
-    var updatedIntent= null;
-    // updatedIntent=this.event.request.intent;
-    //optionally pre-fill slots: update the intent object with slot values for which
-    //you have defaults, then return Dialog.Delegate with this updated intent
-    // in the updatedIntent property
-    //this.emit(":delegate", updatedIntent); //uncomment this is using ASK SDK 1.0.9 or newer
-    
-    //this code is necessary if using ASK SDK versions prior to 1.0.9 
-    if(this.isOverridden()) {
-            return;
-        }
-        this.handler.response = buildSpeechletResponse({
-            sessionAttributes: this.attributes,
-            directives: getDialogDirectives('Dialog.Delegate', updatedIntent, null),
-            shouldEndSession: false
-        });
-        this.emit(':responseReady', updatedIntent);
-        
+      console.log("in Beginning");
+	  var updatedIntent= null;
+	  // updatedIntent=this.event.request.intent;
+      //optionally pre-fill slots: update the intent object with slot values for which
+      //you have defaults, then return Dialog.Delegate with this updated intent
+      // in the updatedIntent property
+      //this.emit(":delegate", updatedIntent); //uncomment this is using ASK SDK 1.0.9 or newer
+	  
+	  //this code is necessary if using ASK SDK versions prior to 1.0.9 
+	  if(this.isOverridden()) {
+			return;
+		}
+		this.handler.response = buildSpeechletResponse({
+			sessionAttributes: this.attributes,
+			directives: getDialogDirectives('Dialog.Delegate', updatedIntent, null),
+			shouldEndSession: false
+		});
+		this.emit(':responseReady', updatedIntent);
+		
     } else if (this.event.request.dialogState !== "COMPLETED") {
-    console.log("in not completed");
-    // return a Dialog.Delegate directive with no updatedIntent property.
-    //this.emit(":delegate"); //uncomment this is using ASK SDK 1.0.9 or newer
-    
-    //this code necessary is using ASK SDK versions prior to 1.0.9
-        if(this.isOverridden()) {
-            return;
-        }
-        this.handler.response = buildSpeechletResponse({
-            sessionAttributes: this.attributes,
-            directives: getDialogDirectives('Dialog.Delegate', updatedIntent, null),
-            shouldEndSession: false
-        });
-        this.emit(':responseReady');
-        
+      console.log("in not completed");
+      // return a Dialog.Delegate directive with no updatedIntent property.
+      //this.emit(":delegate"); //uncomment this is using ASK SDK 1.0.9 or newer
+	  
+	  //this code necessary is using ASK SDK versions prior to 1.0.9
+		if(this.isOverridden()) {
+			return;
+		}
+		this.handler.response = buildSpeechletResponse({
+			sessionAttributes: this.attributes,
+			directives: getDialogDirectives('Dialog.Delegate', updatedIntent, null),
+			shouldEndSession: false
+		});
+		this.emit(':responseReady');
+		
     } else {
-    console.log("in completed");
-    console.log("returning: "+ JSON.stringify(this.event.request.intent));
-    // Dialog is now complete and all required slots should be filled,
-    // so call your normal intent handler.
-    return this.event.request.intent;
+      console.log("in completed");
+      console.log("returning: "+ JSON.stringify(this.event.request.intent));
+      // Dialog is now complete and all required slots should be filled,
+      // so call your normal intent handler.
+      return this.event.request.intent;
     }
 }
 
