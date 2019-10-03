@@ -25,7 +25,8 @@
 
  // 2. Skill Code =======================================================================================================
 "use strict";
-var Alexa = require('alexa-sdk');
+// var Alexa = require('alexa-sdk');
+const Alexa = require('ask-sdk-v1adapter');
 var APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
 var speechOutput = '';
 var handlers = {
