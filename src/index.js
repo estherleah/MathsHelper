@@ -77,6 +77,12 @@ var handlers = {
 		var op2 = this.attributes['op2'];
         var solution = parseInt(op1) * parseInt(op2);
         
+        // check if op2 is defined
+        if (this.attributes['op2'] == undefined) {
+            speechOutput = "Which times tables would you like me to test you on? For example, ask me 'test me on my six times table'";
+            this.emit(":ask", speechOutput);
+            return;
+        }
         // reset the value of op1
         this.attributes['op1'] = Math.floor(Math.random()*13);
 
